@@ -22,8 +22,8 @@ export default function QRCodeDisplay({
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [dataUrl, setDataUrl] = useState<string>('')
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    const fullUrl = `${appUrl}${value}`
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const fullUrl = `${siteUrl}${value}`
 
     useEffect(() => {
         if (canvasRef.current) {
