@@ -22,10 +22,13 @@ export default function QRCodeDisplay({
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [dataUrl, setDataUrl] = useState<string>('')
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    const fullUrl = `${siteUrl}${value}`
-
+    // Resolve the full URL inside useEffect so window.location.origin is always
+    // the REAL domain the browser is on (localhost in dev, Vercel URL in prod).
+    // No env vars needed — can never encode localhost after deployment.
     useEffect(() => {
+        const origin = window.location.origin   // e.g. https://school-erp-xxx.vercel.app
+        const fullUrl = `${origin}${value}`     // e.g. .../student/uuid
+
         if (canvasRef.current) {
             QRCode.toCanvas(canvasRef.current, fullUrl, {
                 width: size,
@@ -44,7 +47,7 @@ export default function QRCodeDisplay({
                 },
             }).then(setDataUrl)
         }
-    }, [fullUrl, size])
+    }, [value, size])  // re-generates whenever path or size changes
 
     const handleDownload = () => {
         if (!dataUrl) return
